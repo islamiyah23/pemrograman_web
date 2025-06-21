@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head><title>Image Slideshow</title></head> 
+    <body>
+        <h2>Galeri Gambar</h2> 
+        <img id="slideshow-image" src="" alt="Slideshow" width="500"> 
+        <br> 
+        <button onclick="gantiGambar(-1)">Previous</button> 
+        <button onclick="gantiGambar(1)">Next</button>
+
+        <script>
+            var gambar = [ 
+                "bunga1.jpg", 
+                "bunga2.jpg", 
+                "bunga3.jpg",
+                "bunga4.jpg",  
+                "bunga5.jpg" 
+            ];
+            
+            var indexGambar = 0; 
+            var imageElement = document.getElementById("slideshow-image"); 
+
+            function tampilkanGambar() { 
+                imageElement.src = gambar[indexGambar]; 
+            }
+
+            function gantiGambar(arah) {
+                indexGambar += arah; 
+                if (indexGambar >= gambar.length) { 
+                    indexGambar = 0; 
+                }
+                if (indexGambar < 0) { 
+                    indexGambar = gambar.length - 1; 
+                }
+                tampilkanGambar(); 
+            }
+
+            // Tampilkan gambar pertama saat halaman dimuat 
+            tampilkanGambar(); 
+        </script>
+    </body>
+</html>

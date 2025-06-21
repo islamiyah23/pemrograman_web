@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toko Elektronik Cepat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .product-img { width: 100%; height: 200px; object-fit: cover; }
+        .product-card { cursor: pointer; }
+    </style>
+    </head>
+    <body class="p-4">
+    <div class="container">
+        <h1 class="text-center">Toko Elektronik Cepat</h1>
+        <p class="text-center" id="tanggal"></p>
+
+        <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+            <img id="gambar-produk" class="card-img-top product-img" src="" alt="Produk" />
+            <div class="card-body">
+                <h5 class="card-title" id="nama-produk"></h5>
+                <p class="card-text">Harga: Rp <span id="harga-produk"></span></p>
+                <button class="btn btn-secondary" onclick="sebelumnya()">Previous</button>
+                <button class="btn btn-secondary" onclick="selanjutnya()">Next</button>
+            </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Daftar Produk</h4>
+            <ul id="daftar-produk" class="list-group">
+            <li class="list-group-item product-card" onclick="pilihKategori('TV')">Smart TV</li>
+            <li class="list-group-item product-card" onclick="pilihKategori('Tablet')">Tablet</li>
+            <li class="list-group-item product-card" onclick="pilihKategori('Setrika')">Setrika</li>
+            </ul>
+        </div>
+        </div>
+
+        <hr />
+        <h3>Form Pemesanan</h3>
+        <form onsubmit="return pesanProduk()">
+        <div class="mb-2">
+            <label for="nama">Nama Pemesan:</label>
+            <input type="text" class="form-control" id="nama" />
+        </div>
+        <div class="mb-2">
+            <label for="jumlah">Jumlah Pesan:</label>
+            <input type="number" class="form-control" id="jumlah" />
+        </div>
+        <div class="mb-2">
+            <label for="promo">Kode Promo:</label>
+            <input type="text" class="form-control" id="promo" />
+        </div>
+        <button type="submit" class="btn btn-primary">Pesan Sekarang</button>
+        </form>
+
+        <div class="mt-4" id="output-pesanan"></div>
+    </div>
+
+    <script>
+        document.getElementById("tanggal").innerText = new Date().toLocaleString();
+
+        const semuaProduk = {
+        TV: [
+            { nama: "Smart TV 50” Crystal 4K Samsung 50AU7700", harga: 4485000, gambar: "tv1.jpg" },
+            { nama: "Smart TV Philips 43PFT6509", harga: 3127080, gambar: "tv2.jpg" },
+        ],
+        Tablet: [
+            { nama: "Tablet Samsung Galaxy Tab A8", harga: 2899000, gambar: "tablet1.jpg" },
+            { nama: "Tablet Lenovo Tab M10 HD", harga: 2790000, gambar: "tablet2.jpg" },
+        ],
+        Setrika: [
+            { nama: "Setrika Philips Dry Iron HD1173", harga: 305000, gambar: "setrika1.jpg" },
+            { nama: "Setrika Uap Miyako EI-1000M", harga: 225000, gambar: "setrika2.jpg" },
+        ]
+        };
+
+        let kategoriDipilih = "TV";
+        let index = 0;
+
+        function tampilkanProduk(i) {
+        const produk = semuaProduk[kategoriDipilih];
+        const item = produk[i];
+        document.getElementById("gambar-produk").src = item.gambar;
+        document.getElementById("nama-produk").innerText = item.nama;
+        document.getElementById("harga-produk").innerText = item.harga.toLocaleString('id-ID');
+        }
+
+        function selanjutnya() {
+        const produk = semuaProduk[kategoriDipilih];
+        index = (index + 1) % produk.length;
+        tampilkanProduk(index);
+        }
+
+        function sebelumnya() {
+        const produk = semuaProduk[kategoriDipilih];
+        index = (index - 1 + produk.length) % produk.length;
+        tampilkanProduk(index);
+        }
+
+        function pilihKategori(kategori) {
+        kategoriDipilih = kategori;
+        index = 0;
+        tampilkanProduk(index);
+        }
+
+        tampilkanProduk(index);
+
+        function pesanProduk() {
+        const nama = document.getElementById("nama").value;
+        const jumlah = parseInt(document.getElementById("jumlah").value);
+        const promo = document.getElementById("promo").value.toUpperCase();
+
+        if (!nama || isNaN(jumlah) || jumlah <= 0) {
+            alert("Mohon isi form dengan benar!");
+            return false;
+        }
+
+        const produk = semuaProduk[kategoriDipilih][index];
+        const subtotal = produk.harga * jumlah;
+        let diskon = 0;
+        let keterangan = "-";
+
+        if (promo === "DISKON10") {
+            diskon = subtotal * 0.10;
+            keterangan = "10%";
+        }
+
+        const total = subtotal - diskon;
+        const orderId = "INV-" + Math.floor(10000 + Math.random() * 90000);
+
+        document.getElementById("output-pesanan").innerHTML = `
+            <div class="card p-3">
+            <h4>Struk Pemesanan</h4>
+            <p><b>Order ID:</b> ${orderId}</p>
+            <p><b>Nama Pemesan:</b> ${nama}</p>
+            <p><b>Produk:</b> ${produk.nama}</p>
+            <p><b>Jumlah:</b> ${jumlah}</p>
+            <p><b>Subtotal:</b> Rp ${subtotal.toLocaleString('id-ID')}</p>
+            <p><b>Potongan (${keterangan}):</b> Rp ${diskon.toLocaleString('id-ID')}</p>
+            <h5><b>Total Bayar:</b> Rp ${total.toLocaleString('id-ID')}</h5>
+            </div>
+        `;
+        return false;
+        }
+    </script>
+</body>
+</html>
